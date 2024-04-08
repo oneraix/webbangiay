@@ -1,0 +1,80 @@
+﻿@model ShoppingCart
+
+<h2>Your Cart</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm" type="button" onclick="decreaseQuantity('@item.ProductId')">-</button>
+                                    </span>
+                                    <input type="text" class="form-control text-center" value="@item.Quantity" id="quantity_@item.ProductId" readonly />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-sm" type="button" onclick="increaseQuantity('@item.ProductId')">+</button>
+                                    </span>
+                                </div>
+                            </td>
+                            <td id="price_@item.ProductId">$@item.Price</td>
+
+                            <td id="total_@item.ProductId">$@(item.Price * item.Quantity)</td>
+                            <td>
+                                <form method="post" asp-action="RemoveFromCart" asp-route-productId="@item.ProductId">
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a class="btn btn-primary" asp-controller="ShoppingCart" asp-action="Checkout">Checkout</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function increaseQuantity(productId) {
+            var quantityInput = document.getElementById("quantity_" + productId);
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+            updateTotal(productId);
+        }
+
+        function decreaseQuantity(productId) {
+            var quantityInput = document.getElementById("quantity_" + productId);
+            var newQuantity = parseInt(quantityInput.value) - 1;
+            if (newQuantity >= 0) {
+                quantityInput.value = newQuantity;
+                updateTotal(productId);
+            }
+        }
+
+        function updateTotal(productId) {
+            var quantityInput = document.getElementById("quantity_" + productId);
+            var pricePerItem = parseFloat(document.getElementById("price_" + productId).innerText.replace("$", ""));
+            var total = quantityInput.value * pricePerItem;
+            document.getElementById("total_" + productId).innerText = "$" + total.toFixed(2);
+        }
+    </script>
+}
+

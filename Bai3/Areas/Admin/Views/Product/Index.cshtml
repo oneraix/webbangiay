@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Bai3.Models.Product>
+<h2>Products</h2>
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>Sản phẩm</th>
+            <th>Hình ảnh</th>
+            <th>Giá</th>
+            <th>Mô tả</th>
+            <th>Loại</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td><img src="@product.ImageUrl" alt="Product Image" style="max-width: 100px;" /></td>
+                <td>@product.Price</td>
+                <td>@product.Description</td>
+                <td>@(product.Category?.Name ?? "No Category")</td>
+                <td>
+                    |<a asp-action="Display" asp-route-id="@product.Id" class="btn btn-info">View</a>|
+
+                    |<a asp-action="Update" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>|
+
+                    |<a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>|
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
